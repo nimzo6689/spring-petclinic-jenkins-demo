@@ -29,7 +29,8 @@ pipeline {
             -Dsonar.projectName=petclinic \
             -Dsonar.java.binaries=. \
             -Dsonar.projectKey=petclinic \
-            -Dsonar.test.inclusions=**/*.(Tests).java '''
+            -Dsonar.test.inclusions=**/*.Tests.java
+            -Dsonar.coverage.exclusions=**/*.Tests.java '''
         }
       }
     }
