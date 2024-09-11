@@ -1,0 +1,35 @@
+pipeline {
+  agent any
+
+  tools {
+    jdk 'jdk17'
+  }
+
+  environment {
+    SCANNER_HOME=tool 'sonar-scanner'
+  }
+
+  stages {
+    stage('Git Checkout') {
+      steps {
+        git branch: 'feature/jenkins', changelog: false, poll: false, url: 'https://github.com/nimzo6689/spring-petclinic-jenkins.git'
+      }
+    }
+
+    stage('Testing') {
+      steps {
+        sh './mvnw clean jacoco:prepare-agent test jacoco:report'
+      }
+    }
+
+    stage('Sonarqube Analysis') {
+      steps {
+        withSonarQubeEnv('sonar-server') {
+          sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=petclinic \
+            -Dsonar.java.binaries=. \
+            -Dsonar.projectKey=petclinic '''
+        }
+      }
+    }
+  }
+}

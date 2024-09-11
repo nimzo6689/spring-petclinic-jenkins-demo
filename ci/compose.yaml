@@ -1,0 +1,60 @@
+name: 'spring-petclinic-ci'
+
+services:
+  sonarqube:
+    image: sonarqube:lts
+    container_name: sonarqube
+    networks:
+      - jenkins
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+
+  docker:
+    image: docker:dind
+    container_name: docker
+    privileged: true
+    networks:
+      - jenkins
+    environment:
+      DOCKER_TLS_CERTDIR: /certs
+    volumes:
+      - jenkins_docker_certs:/certs/client
+      - jenkins_data:/var/jenkins_home
+    expose:
+      - "2376"
+
+  jenkins:
+    build: .
+    container_name: jenkins
+    depends_on:
+      - docker
+    networks:
+      - jenkins
+    environment:
+      DOCKER_HOST: "tcp://docker:2376"
+      DOCKER_CERT_PATH: /certs/client
+      DOCKER_TLS_VERIFY: 1
+    expose:
+      - "8888"
+      - "50000"
+    ports:
+      - "8888:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_docker_certs:/certs/client:ro
+      - jenkins_data:/var/jenkins_home
+
+networks:
+  jenkins:
+    driver: bridge
+
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  jenkins_docker_certs:
+  jenkins_data:

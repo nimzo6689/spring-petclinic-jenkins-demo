@@ -14,4 +14,3 @@ build/*
 .vscode
 _site/
 *.css
-!petclinic.css

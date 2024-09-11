@@ -1,0 +1,9 @@
+name: "spring-petclinic-jdk"
+services:
+  spring:
+    image: eclipse-temurin:17
+    tty: true
+    volumes:
+      - .:/app
+    ports:
+      - 8080:8080
