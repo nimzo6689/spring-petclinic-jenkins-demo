@@ -12,7 +12,7 @@ pipeline {
   stages {
     stage('Git Checkout') {
       steps {
-        git branch: 'feature/jenkins', changelog: false, poll: false, url: 'https://github.com/nimzo6689/spring-petclinic-jenkins.git'
+        git branch: 'feature/jenkins', changelog: false, poll: false, url: 'https://github.com/nimzo6689/spring-petclinic-jenkins-demo.git'
       }
     }
 
